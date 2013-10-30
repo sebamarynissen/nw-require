@@ -27,7 +27,7 @@ define(function(require) {
 });
 ```
 
-etc. This is done by adding a check for whether the environment is node-webkit. If so, for every module it is checked whether it exists as node.js module. If so, the module is loaded. If not, require.js will try to load the module as simple <script> tag.
+etc. This is done by adding a check for whether the environment is node-webkit. If so, for every module it is checked whether it exists as node.js module. If so, the module is loaded. If not, require.js will try to load the module as a simple &lt;script&gt; tag.
 Allmost all of the changes are done within the function req.load.
 
 ```javascript
