@@ -1,5 +1,6 @@
-nw-require
-============
+# nw-require
+
+## Overview
 
 Rogerwang's node-webkit (https://github.com/rogerwang/node-webkit) lets you create native desktop apps using HTML, CSS and JavaScript, but also gives you access to all node.js modules, directly from the DOM.
 When using require.js, this often leads to problems, due to the fact that both require.js and node.js have a global require function.
@@ -65,8 +66,14 @@ Note that using require's optimizer will fail since it won't find a dependency c
 This can be solved by specifying the native node.js modules as modules the optimizer should exclude.
 Fore more info, see: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 
-requirejs version
-============
+## Install
+
+Just download `nw-require.js` or install via bower using
+```
+bower install nw-require
+```
+
+## Require.js version
 
 The version of requirejs that was used, is version 2.1.14.
 If you specifically need other versions of requirejs, I suggest you try to modify it yourself.
