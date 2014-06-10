@@ -1,0 +1,10 @@
+node_modules/
+*/js/vendor/
+
+# Specific files
+debug.log
+*.exe
+*.dll
+credits.html
+nw.pak
+test.html

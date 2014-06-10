@@ -1,0 +1,24 @@
+{
+  "name": "nw-require",
+  "main": "nw-require.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/sebamarynissen/nw-require",
+  "authors": [
+    "sebamarynissen <sebastiaan.marynissen@poutrix.be>"
+  ],
+  "description": "Lets you require native node modules using requirejs on node-webkit",
+  "keywords": [
+    "node-webkit",
+    "requirejs"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "*.exe",
+    "nw.pak"
+  ]
+}
