@@ -28,8 +28,17 @@ define(function(require) {
 
 });
 ```
+etc.
 
-etc. This is done by adding a check for whether the environment is node-webkit. If so, for every module it is checked whether it exists as node.js module.
+Even 
+```javascript
+define(function(require) {
+
+    var gui = require('nw.gui');
+
+});
+```
+is possible. The magic is done by adding a check for whether the environment is node-webkit. If so, for every module it is checked whether it exists as node.js module.
 If so, the module is loaded. If not, require.js will try to load the module as a simple &lt;script&gt; tag.
 Allmost all of the changes are done within the function req.load.
 
@@ -53,7 +62,7 @@ if ((function() {
     // returns the module, required by nodejs's require function. 
     // Then, call completeLoad to complete the load
     context.defQueue.push([moduleName, [], function() {
-        return nodereq(moduleName);
+        return nwreq(moduleName);
     }]);
     context.completeLoad(moduleName);
 }
@@ -83,7 +92,7 @@ Minor changes are
 ```javascript
 (function (global, nodereq) {
     // All code
-}(this, typeof global === 'undefined' ? void 0 : global.require));
+}(this, typeof global === 'undefined' ? void 0 : global.require, require));
 ```
 
 So you should be able to do this yourself.

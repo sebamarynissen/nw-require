@@ -9,7 +9,7 @@
 /*global window, navigator, document, importScripts, setTimeout, opera */
 
 var requirejs, require, define;
-(function (global, nodereq) {
+(function (global, nodereq, nwreq) {
     var req, s, head, baseElement, dataMain, src,
         interactiveScript, currentlyAddingScript, mainScript, subPath,
         version = '2.1.14',
@@ -1855,15 +1855,16 @@ var requirejs, require, define;
                 return true;
             }
             catch (e) {
-                return false;
+                return moduleName === 'nw.gui';
             }
         })()) {
+
             // Push in the defQueue with no dependencies, and as callback 
             // function an anonymous function is specified, which simply 
             // returns the module, required by nodejs's require function. 
             // Then, call completeLoad to complete the load
             context.defQueue.push([moduleName, [], function() {
-                return nodereq(moduleName);
+                return nwreq(moduleName);
             }]);
             context.completeLoad(moduleName);
         }
@@ -2103,4 +2104,7 @@ var requirejs, require, define;
 
     //Set up with config info.
     req(cfg);
-}(this, typeof global === 'undefined' ? void 0 : global.require));
+
+// Improtant: there is a difference between global.require and the overwrite of
+// require that nodewebkit uses. We'll need both, so pass both into the closure
+}(this, typeof global === 'undefined' ? void 0 : global.require, require));
