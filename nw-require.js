@@ -2105,33 +2105,30 @@ var requirejs, require, define;
     //Set up with config info.
     req(cfg);
 
-    // Some plugins for requirejs (such as require-handlebars-plugin) make use 
-    // of the global require object instead of the requirejs, which will not
-    // result in a name conflict. To ensure maximum compatibility, copy as much
-    // properties from the requirejs object to nodewebkits require object.
-    for (var i in requirejs) {
-        if (!nwreq[i]) {
-            nwreq[i] = requirejs[i];
-        }
-    }
-
-    // For the same reason, some plugins still simply use require() instead of
-    // requirejs(). Therefore, if require() is called in the requirejs() way of
-    // calling it, it must be checked what is meant. If we're dealing with an 
-    // array as first argument, node's require() can't handle this and will 
-    // throw an assertion error. Therefore, override nodereq (i.e. global.
-    // require) with a function which performs additional checks.
-    nodereq = (function(nodereq, requirejs) {
+    // Some plugins, such as the require-handlebars-plugin use require() 
+    // insteadof requirejs, which will result in name conflicts and also 
+    // unexpected behavior, such as AssertionErrors and so on. Therefore,
+    // simulate the requirejs behavior of the require function when the
+    // requirejs syntax is used (i.e. require(['module'], function() {}))
+    // IMPORTANT NOTE: Below global.require() is used, but this is in fact
+    // window.require, because requirejs passes "this" into the closure, which
+    // is then renamed to global, overriding node.js's "global" object!
+    global.require = (function(nodewebkit, requirejs) {
         return function() {
             if (isArray(arguments[0])) {
                 return requirejs.apply(null, arguments);
             }
             else {
-                return nodereq.apply(null, arguments);
+                return nodewebkit.apply(null, arguments);
             }
         };
-    })(nodereq, req);
+    })(nwreq, req);
+    for (var i in req) {
+        if (!global.require[i]) {
+            global.require[i] = req[i];
+        }
+    }
 
 // Important: there is a difference between global.require and the overwrite of
 // require that nodewebkit uses. We'll need both, so pass both into the closure
-}(this, typeof global === 'undefined' ? void 0 : global.require, require));
+}(this, global.require, require));
