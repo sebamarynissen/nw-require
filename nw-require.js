@@ -2124,7 +2124,7 @@ var requirejs, require, define;
     nodereq = (function(nodereq, requirejs) {
         return function() {
             if (isArray(arguments[0])) {
-                return requirejs.apply(null, arguments);
+                return req.apply(null, arguments);
             }
             else {
                 console.log('nee');
