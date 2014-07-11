@@ -82,6 +82,42 @@ Just download `nw-require.js` or install via bower using
 bower install nw-require
 ```
 
+## Conflicts
+
+Some plugins (for instance the [require-handlebars-plugin](https://github.com/SlexAxton/require-handlebars-plugin)) use the global ```require()``` function instead of ```requirejs()``` which results in unexpected behavior, such as AssertionErrors being thrown because node.js complains that the path must be a string (and not an array, as in the requirejs syntax). Therefore, the lines
+
+```javascript
+// Some plugins for requirejs (such as require-handlebars-plugin) make use 
+// of the global require object instead of the requirejs, which will not
+// result in a name conflict. To ensure maximum compatibility, copy as much
+// properties from the requirejs object to nodewebkits require object.
+for (var i in requirejs) {
+    if (!nwreq[i]) {
+        nwreq[i] = requirejs[i];
+    }
+}
+
+// For the same reason, some plugins still simply use require() instead of
+// requirejs(). Therefore, if require() is called in the requirejs() way of
+// calling it, it must be checked what is meant. If we're dealing with an 
+// array as first argument, node's require() can't handle this and will 
+// throw an assertion error. Therefore, override nodereq (i.e. global.
+// require) with a function which performs additional checks.
+nodereq = (function(nodereq, requirejs) {
+    return function() {
+        if (isArray(arguments[0])) {
+            return requirejs.apply(null, arguments);
+        }
+        else {
+            console.log('nee');
+            return nodereq.apply(null, arguments);
+        }
+    };
+})(nodereq, req);
+```
+
+were added. This is - again - an override of the ```require()``` function, which detects what syntax is used, and calls the appropriate require function.
+
 ## Require.js version
 
 The version of requirejs that was used, is version 2.1.14.
@@ -91,7 +127,42 @@ Minor changes are
 
 ```javascript
 (function (global, nodereq) {
-    // All code
+
+    /*
+     * ALL
+     * OTHER
+     * CODE
+     */
+
+    // Some plugins for requirejs (such as require-handlebars-plugin) make use 
+    // of the global require object instead of the requirejs, which will not
+    // result in a name conflict. To ensure maximum compatibility, copy as much
+    // properties from the requirejs object to nodewebkits require object.
+    for (var i in requirejs) {
+        if (!nwreq[i]) {
+            nwreq[i] = requirejs[i];
+        }
+    }
+
+    // For the same reason, some plugins still simply use require() instead of
+    // requirejs(). Therefore, if require() is called in the requirejs() way of
+    // calling it, it must be checked what is meant. If we're dealing with an 
+    // array as first argument, node's require() can't handle this and will 
+    // throw an assertion error. Therefore, override nodereq (i.e. global.
+    // require) with a function which performs additional checks.
+    nodereq = (function(nodereq, requirejs) {
+        return function() {
+            if (isArray(arguments[0])) {
+                return requirejs.apply(null, arguments);
+            }
+            else {
+                console.log('nee');
+                return nodereq.apply(null, arguments);
+            }
+        };
+    })(nodereq, req);
+    
+    
 }(this, typeof global === 'undefined' ? void 0 : global.require, require));
 ```
 
