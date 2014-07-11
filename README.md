@@ -109,7 +109,6 @@ nodereq = (function(nodereq, requirejs) {
             return requirejs.apply(null, arguments);
         }
         else {
-            console.log('nee');
             return nodereq.apply(null, arguments);
         }
     };
