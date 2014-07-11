@@ -2127,7 +2127,6 @@ var requirejs, require, define;
                 return requirejs.apply(null, arguments);
             }
             else {
-                console.log('nee');
                 return nodereq.apply(null, arguments);
             }
         };
