@@ -2124,14 +2124,14 @@ var requirejs, require, define;
     nodereq = (function(nodereq, requirejs) {
         return function() {
             if (isArray(arguments[0])) {
-                return req.apply(null, arguments);
+                return requirejs.apply(null, arguments);
             }
             else {
                 console.log('nee');
                 return nodereq.apply(null, arguments);
             }
         };
-    })(nodereq, requirejs);
+    })(nodereq, req);
 
 // Important: there is a difference between global.require and the overwrite of
 // require that nodewebkit uses. We'll need both, so pass both into the closure
