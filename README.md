@@ -193,6 +193,48 @@ Minor changes are
         }
     }
     
+    // If you have a "./lib" folder and thus not in the node_modules folder, 
+    // which need not to be run in the browser environment of node-webkit, you
+    // can't simply use
+    //
+    // define(function(require) {
+    //     var util = require('./lib').util;
+    // });
+    //
+    // This is because require.js normalizes './lib' firstly to 'lib' before 
+    // trying to resolve it, resulting in a module which was not found, since 
+    // "lib" is neither a native node module, neither in the node_modules 
+    // folder. Therefore, a special plugin is added to require.js. If you need // to load files from a local folder, use
+    // define(function(require) {
+    //     var util = require('lcl!lib').util;
+    // });
+    // It is even possible to specify some configuration options to the lcl! 
+    // plugin so that a root folder can be specified.
+    define("lcl", ["module"], function(module) {
+        var config = (module.config && module.config()) || {};
+        config.root = config.root || './';
+
+        var lcl = {
+            load: function(name, req, done) {
+
+                // If we're optimizing, do nothing
+                if (config && config.isBuild) {
+                    done();
+                }
+
+                // Try to load, but throw errors if not found
+                try {
+                    var path = config.root + name,
+                        module = nwreq(path);
+                        done(module);
+                }
+                catch (e) {
+                    done.error(e);
+                }
+            }
+        };
+        return lcl;
+    });
     
 }(this, typeof global === 'undefined' ? void 0 : global.require, require));
 ```
