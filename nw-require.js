@@ -2162,7 +2162,7 @@ var requirejs, require, define;
 
                 // Try to load, but throw errors if not found
                 try {
-                    var path = config.root + name,
+                    var path = (config.root+'').replace(/\/$/, '') + '/' + name,
                         module = nwreq(path);
                         done(module);
                 }
