@@ -75,6 +75,45 @@ Note that using require's optimizer will fail since it won't find a dependency c
 This can be solved by specifying the native node.js modules as modules the optimizer should exclude.
 Fore more info, see: https://github.com/jrburke/r.js/blob/master/build/example.build.js
 
+## Requiring other files
+
+On plain nodewebkit, it is possible to call
+
+```javascript
+var util = require('./lib/util');
+```
+if you have a local folder called "lib" with some internal modules in it. Using
+```javascript
+define(function(require) {
+    var util = require('./lib/util');
+});
+```
+will not work however, only native node modules or modules from the node_modules folder can be loaded, due to the fact that requirejs normalizes the path first before passing it to the req.load() function.
+As a consequence the base url etc. will be added.
+To be able to require internal modules, a plugin called "lcl" was built in.
+This allows for
+```javascript
+define(function(require) {
+    var util = require('lcl!lib/util');
+});
+```
+You may specify a root directory in the requirejs config object, such as
+```javascript
+requirejs.config({
+    "config": {
+    "lcl": {
+        "root": "./lib"
+    }
+}
+});
+```
+which allows for
+```javascript
+define(function(require) {
+    var util = require('lcl!util');
+});
+```
+
 ## Install
 
 Just download `nw-require.js` or install via bower using
